@@ -32,6 +32,7 @@ module.exports = {
       noOfSeats: {
         type: Sequelize.INTEGER,
         allowNull: false,
+        defaultValue: 1,
       },
       createdAt: {
         allowNull: false,
