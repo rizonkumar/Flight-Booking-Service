@@ -15,7 +15,6 @@ async function createBooking(data) {
       `${ServerConfig.FLIGHT_SERVICE}/api/v1/flights/${data.flightId}`
     );
     const flightData = flight.data.data;
-    console.log("Flight Data", flightData);
 
     if (data.noofSeats > flightData.totalSeats) {
       throw new AppError(
@@ -29,10 +28,6 @@ async function createBooking(data) {
 
     const totalBookingAmount = data.noofSeats * flightData.price;
     const bookingPayload = { ...data, totalCost: totalBookingAmount };
-    console.log(
-      "Booking Payload ------------------->>>>>>>>>>",
-      bookingPayload
-    );
 
     // Pass transaction to create metho
     const booking = await bookingRespository.create(
@@ -48,11 +43,9 @@ async function createBooking(data) {
     );
 
     await transaction.commit();
-    console.log("Boookingggg ->>>>>>>>>>>>>>>>", booking);
     return booking;
   } catch (error) {
     await transaction.rollback();
-    console.log("Error in createBooking ->", error);
     if (error instanceof AppError) {
       throw error;
     }
