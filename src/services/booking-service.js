@@ -5,6 +5,8 @@ const { ServerConfig } = require("../config");
 const db = require("../models");
 const AppError = require("../utils/errors/app-error");
 const { MESSAGES, CONFIG } = require("../utils/constants");
+const { Enums } = require("../utils/common");
+const { BOOKED } = Enums.BOOKING_STATUS;
 
 const bookingRespository = new BookingRepository();
 
@@ -56,4 +58,34 @@ async function createBooking(data) {
   }
 }
 
-module.exports = { createBooking };
+async function makePayment(data) {
+  const transaction = await db.sequelize.transaction();
+  try {
+    const bookingDetails = await bookingRespository.get(data.bookingId);
+    if (bookingDetails.totalCost !== parseInt(data.totalCost)) {
+      throw new AppError(
+        MESSAGES.ERROR.PAYMENT_FAILED,
+        StatusCodes.BAD_REQUEST
+      );
+    }
+
+    if (bookingDetails.userId !== parseInt(data.userId)) {
+      throw new AppError(
+        MESSAGES.ERROR.PAYMENT_FAILED_1,
+        StatusCodes.BAD_REQUEST
+      );
+    }
+
+    // we assume here that payment gateway is working fine
+    const response = await bookingRespository.update(data.bookingId, {
+      status: BOOKED,
+    });
+
+    await transaction.commit();
+  } catch (error) {
+    await transaction.rollback();
+    throw error;
+  }
+}
+
+module.exports = { createBooking, makePayment };
