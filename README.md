@@ -1,4 +1,4 @@
-````markdown
+
 # Flight Booking Service
 
 A microservice for handling flight bookings built with Node.js, Express, and MySQL.
@@ -10,7 +10,7 @@ A microservice for handling flight bookings built with Node.js, Express, and MyS
    git clone https://github.com/yourusername/flight-booking-service.git
    cd flight-booking-service
    ```
-````
+
 
 2. Install dependencies:
 
@@ -26,11 +26,19 @@ A microservice for handling flight bookings built with Node.js, Express, and MyS
 
 ## Database Setup
 
+1. Sequlize init inside src folder
+
+   ```bash
+   npx sequelize init --force
+   ```
+   **Note**: Inside src/config/congif.json file should be present which contains username, password etc.
+
 1. Create the database using Sequelize:
 
    ```bash
    npx sequelize-cli db:create
    ```
+   
 
 2. Run migrations:
 
